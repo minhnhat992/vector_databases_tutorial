@@ -1,35 +1,38 @@
-"""
-Spacy is a NLP package, we wil use that to create a NLP model
-https://spacy.io/models
+"""Using sentence-transformeds, we perform text embeddings."""
+from sentence_transformers import SentenceTransformer
 
-Import the language model, and calculate cosine between embeddings, to determine how similar different words are
-"""
-import numpy as np
+from cosine_similarity import compute_cosine_similarity
 
-# need to run load model first. This is a medium size English language model
-# in terminal : python -m spacy download en_core_web_md
-import spacy
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
-nlp = spacy.load("en_core_web_md")
+texts = [
+    "The canine barked loudly.",
+    "The dog made a noisy bark.",
+    "He ate a lot of pizza.",
+    "He devoured a large quantity of pizza pie.",
+]
 
-# a vector for the word dog
-dog_embedding = nlp.vocab["dog"].vector
-dog_embedding[0:10]
+text_embeddings = model.encode(texts)
 
-cat_embedding = nlp.vocab["cat"].vector
-apple_embedding = nlp.vocab["apple"].vector
-tasty_embedding = nlp.vocab["tasty"].vector
-delicious_embedding = nlp.vocab["delicious"].vector
-truck_embedding = nlp.vocab["truck"].vector
+# Notice that text_embeddings is a NumPy array with the shape (4, 384), which means that it has 4 rows and 384
+# columns. This is because you encoded 4 texts, and "all-MiniLM-L6-v2" generates 384-dimensional embeddings.
+text_embeddings.shape
 
+text_embeddings_dict = dict(zip(texts, list(text_embeddings)))
+dog_text_1 = "The canine barked loudly."
+dog_text_2 = "The dog made a noisy bark."
 
-def compute_cosine_similarity(u: np.ndarray, v: np.ndarray) -> float:
-    """Compute the cosine similarity between two vectors."""
+# calculate how similar the fistt 2 texts are
+compute_cosine_similarity(
+    text_embeddings_dict[dog_text_1], text_embeddings_dict[dog_text_2]
+)
 
-    return (u @ v) / (np.linalg.norm(u) * np.linalg.norm(v))
+pizza_text_1 = "He ate a lot of pizza."
+pizza_test_2 = "He devoured a large quantity of pizza pie."
+compute_cosine_similarity(
+    text_embeddings_dict[pizza_text_1], text_embeddings_dict[pizza_test_2]
+)
 
-
-compute_cosine_similarity(dog_embedding, cat_embedding)
-compute_cosine_similarity(apple_embedding, tasty_embedding)
-compute_cosine_similarity(apple_embedding, truck_embedding)
-compute_cosine_similarity(delicious_embedding, tasty_embedding)
+compute_cosine_similarity(
+    text_embeddings_dict[dog_text_1], text_embeddings_dict[pizza_text_1]
+)
