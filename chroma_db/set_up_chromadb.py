@@ -7,7 +7,7 @@ CHROMA_DATA_PATH = "chroma_data/"
 EMBED_MODEL = "all-MiniLM-L6-v2"
 COLLECTION_NAME = "demo_docs"
 
-# set up client and collections
+# set up client_vector and collections
 client = chromadb.PersistentClient(path=CHROMA_DATA_PATH)
 
 embedding_funcs = embedding_functions.SentenceTransformerEmbeddingFunction(
