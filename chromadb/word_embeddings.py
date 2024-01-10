@@ -9,7 +9,7 @@ Import the language model, and calculate cosine between embeddings, to determine
 # in terminal : python -m spacy download en_core_web_md
 import spacy
 
-from cosine_similarity import compute_cosine_similarity
+from utils.cosine_similarity import compute_cosine_similarity
 
 nlp = spacy.load("en_core_web_md")
 
